@@ -236,135 +236,362 @@
 
           <h1 id="authentication">Authentication</h1>
 
-<blockquote>
-<p>To authorize, use this code:</p>
-</blockquote>
-<pre class="highlight ruby tab-ruby"><code><span class="nb">require</span> <span class="s1">'roverpass'</span>
+<p>In order to use the Roverpass API, you will first need to be given an API_TOKEN. Once received, you will need to pass in your API_TOKEN as a header in each request, like so:</p>
 
-<span class="n">api</span> <span class="o">=</span> <span class="no">Roverpass</span><span class="o">::</span><span class="no">APIClient</span><span class="p">.</span><span class="nf">authorize!</span><span class="p">(</span><span class="s1">'meowmeowmeow'</span><span class="p">)</span>
-</code></pre><pre class="highlight shell tab-shell"><code><span class="c"># With shell, you can just pass the correct header with each request</span>
-curl <span class="s2">"api_endpoint_here"</span>
-  -H <span class="s2">"Authorization: meowmeowmeow"</span>
+<p><code class="prettyprint">-H &quot;Authorization: Token token=$API_TOKEN&quot;</code></p>
+
+<p>This will allow us to verify who is receiving each response.</p>
+
+<p>Application type is not necessary, but if you are a perfectionist, you can pass in <code class="prettyprint">application/json</code> like this:</p>
+
+<p><code class="prettyprint">-H &quot;Accept:application/json&quot; -H &quot;Content-Type:application/json&quot;</code></p>
+<pre class="highlight shell tab-shell"><code><span class="nv">CONTENT_TYPE</span><span class="o">=</span>application/json
+<span class="nv">HOST</span><span class="o">=</span>https://www.roverpass.com
+<span class="nv">URI</span><span class="o">=</span>/api/campgrounds/roverpass-funland-campground-austin-tx
+<span class="nv">API_TOKEN</span><span class="o">=</span>sup3rs3cr3tp@55w0rd <span class="c"># Not actual API_TOKEN. Don't use this.</span>
+curl -H <span class="s2">"Accept:</span><span class="nv">$CONTENT_TYPE</span><span class="s2">"</span> -H <span class="s2">"Content-Type:</span><span class="nv">$CONTENT_TYPE</span><span class="s2">"</span> -H <span class="s2">"Authorization: Token token=</span><span class="nv">$API_TOKEN</span><span class="s2">"</span> <span class="s2">"</span><span class="nv">$HOST$URI</span><span class="s2">"</span>
 </code></pre>
-<blockquote>
-<p>Make sure to replace <code class="prettyprint">meowmeowmeow</code> with your API key.</p>
-</blockquote>
-
-<p>Roverpass uses API keys to allow access to the API. You can register a new Roverpass API key at our <a href="http://example.com/developers">developer portal</a>.</p>
-
-<p>Roverpass expects for the API key to be included in all API requests to the server in a header that looks like the following:</p>
-
-<p><code class="prettyprint">Authorization: meowmeowmeow</code></p>
-
-<aside class="notice">
-You must replace <code>meowmeowmeow</code> with your personal API key.
-</aside>
-
           <h1 id="campgrounds">Campgrounds</h1>
 
 <h2 id="search-campgrounds">Search Campgrounds</h2>
-<pre class="highlight ruby tab-ruby"><code><span class="nb">require</span> <span class="s1">'roverpass'</span>
+<pre class="highlight ruby tab-ruby"><code><span class="c1"># models/api_client/campground.rb</span>
+<span class="nb">require</span> <span class="s1">'her'</span>
 
-<span class="n">api</span> <span class="o">=</span> <span class="no">Roverpass</span><span class="o">::</span><span class="no">APIClient</span><span class="p">.</span><span class="nf">authorize!</span><span class="p">(</span><span class="s1">'meowmeowmeow'</span><span class="p">)</span>
-<span class="n">api</span><span class="p">.</span><span class="nf">kittens</span><span class="p">.</span><span class="nf">get</span>
-</code></pre><pre class="highlight shell tab-shell"><code>curl <span class="s2">"http://example.com/api/kittens"</span>
-  -H <span class="s2">"Authorization: meowmeowmeow"</span>
+<span class="k">module</span> <span class="nn">ApiClient</span>
+  <span class="k">class</span> <span class="nc">Campground</span>
+    <span class="kp">include</span> <span class="no">Her</span><span class="o">::</span><span class="no">Model</span>
+  <span class="k">end</span>
+<span class="k">end</span>
+
+
+<span class="c1"># controllers/api_client/campgrounds_controller.rb</span>
+<span class="n">require_dependency</span> <span class="s1">'api_client/campground'</span>
+
+<span class="k">module</span> <span class="nn">ApiClient</span>
+  <span class="k">class</span> <span class="nc">CampgroundsController</span> <span class="o">&lt;</span> <span class="no">ApplicationController</span>
+    <span class="k">def</span> <span class="nf">find_campground</span>
+      <span class="vi">@campground</span> <span class="o">=</span> <span class="o">::</span><span class="no">ApiClient</span><span class="o">::</span><span class="no">Campground</span><span class="p">.</span><span class="nf">search</span><span class="p">(</span><span class="s1">'Austin TX USA'</span><span class="p">)</span>
+    <span class="k">end</span>
+  <span class="k">end</span>
+<span class="k">end</span>
+</code></pre><pre class="highlight shell tab-shell"><code><span class="nv">CONTENT_TYPE</span><span class="o">=</span>application/json
+<span class="nv">HOST</span><span class="o">=</span>https://www.roverpass.com
+<span class="nv">URI</span><span class="o">=</span>/api/campgrounds/search/Austin%20Texas%20USA
+<span class="nv">API_TOKEN</span><span class="o">=</span>super_secret_token <span class="c"># Not actual API_TOKEN. Don't use this.</span>
+curl -H <span class="s2">"Accept:</span><span class="nv">$CONTENT_TYPE</span><span class="s2">"</span> -H <span class="s2">"Content-Type:</span><span class="nv">$CONTENT_TYPE</span><span class="s2">"</span> -H <span class="s2">"Authorization: Token token=</span><span class="nv">$API_TOKEN</span><span class="s2">"</span> <span class="s2">"</span><span class="nv">$HOST$URI</span><span class="s2">"</span>
 </code></pre>
-<blockquote>
-<p>The above command returns JSON structured like this:</p>
-</blockquote>
-<pre class="highlight json tab-json"><code><span class="p">[</span><span class="w">
-  </span><span class="p">{</span><span class="w">
-    </span><span class="s2">"id"</span><span class="p">:</span><span class="w"> </span><span class="mi">1</span><span class="p">,</span><span class="w">
-    </span><span class="s2">"name"</span><span class="p">:</span><span class="w"> </span><span class="s2">"Fluffums"</span><span class="p">,</span><span class="w">
-    </span><span class="s2">"breed"</span><span class="p">:</span><span class="w"> </span><span class="s2">"calico"</span><span class="p">,</span><span class="w">
-    </span><span class="s2">"fluffiness"</span><span class="p">:</span><span class="w"> </span><span class="mi">6</span><span class="p">,</span><span class="w">
-    </span><span class="s2">"cuteness"</span><span class="p">:</span><span class="w"> </span><span class="mi">7</span><span class="w">
-  </span><span class="p">},</span><span class="w">
-  </span><span class="p">{</span><span class="w">
-    </span><span class="s2">"id"</span><span class="p">:</span><span class="w"> </span><span class="mi">2</span><span class="p">,</span><span class="w">
-    </span><span class="s2">"name"</span><span class="p">:</span><span class="w"> </span><span class="s2">"Max"</span><span class="p">,</span><span class="w">
-    </span><span class="s2">"breed"</span><span class="p">:</span><span class="w"> </span><span class="s2">"unknown"</span><span class="p">,</span><span class="w">
-    </span><span class="s2">"fluffiness"</span><span class="p">:</span><span class="w"> </span><span class="mi">5</span><span class="p">,</span><span class="w">
-    </span><span class="s2">"cuteness"</span><span class="p">:</span><span class="w"> </span><span class="mi">10</span><span class="w">
-  </span><span class="p">}</span><span class="w">
-</span><span class="p">]</span><span class="w">
-</span></code></pre>
-<p>This endpoint retrieves all kittens.</p>
+<p>This endpoint allows the client to pass in a query to geolocate campgrounds within a 40 mile radius.</p>
 
 <h3 id="http-request">HTTP Request</h3>
 
-<p><code class="prettyprint">GET http://example.com/api/kittens</code></p>
+<p><code class="prettyprint">GET http://www.roverpass.com/api/campgrounds/search/:query</code></p>
 
+<h3 id="ruby-her">Ruby/Her</h3>
+
+<p>If you&rsquo;d like to use a Ruby integration, our API works seamlessly with the <a href="https://github.com/remiprev/her">Her</a> gem.</p>
+
+<blockquote>
+<p>A successful response will be a JSON array similar to this:</p>
+</blockquote>
+<pre class="highlight json tab-json"><code><span class="p">[</span><span class="w">
+  </span><span class="p">{</span><span class="w">
+    </span><span class="s2">"slug"</span><span class="p">:</span><span class="w"> </span><span class="s2">"roverpass-funland"</span><span class="p">,</span><span class="w">
+    </span><span class="s2">"name"</span><span class="p">:</span><span class="w"> </span><span class="s2">"RoverPass Funland Campground"</span><span class="p">,</span><span class="w">
+    </span><span class="s2">"phone"</span><span class="p">:</span><span class="w"> </span><span class="s2">"314274-3624"</span><span class="p">,</span><span class="w">
+    </span><span class="s2">"ranking_score"</span><span class="p">:</span><span class="w"> </span><span class="mi">474</span><span class="p">,</span><span class="w">
+    </span><span class="s2">"latitude"</span><span class="p">:</span><span class="w"> </span><span class="mf">30.272920551044</span><span class="p">,</span><span class="w">
+    </span><span class="s2">"longitude"</span><span class="p">:</span><span class="w"> </span><span class="mf">-97.744463633061</span><span class="p">,</span><span class="w">
+    </span><span class="s2">"full_address"</span><span class="p">:</span><span class="w"> </span><span class="s2">"3101 Bee Caves Rd, Austin, Texas, 78746"</span><span class="p">,</span><span class="w">
+    </span><span class="s2">"address"</span><span class="p">:</span><span class="w"> </span><span class="s2">"3101 Bee Caves Rd"</span><span class="p">,</span><span class="w">
+    </span><span class="s2">"address2"</span><span class="p">:</span><span class="w"> </span><span class="kc">null</span><span class="p">,</span><span class="w">
+    </span><span class="s2">"city_name"</span><span class="p">:</span><span class="w"> </span><span class="s2">"Austin"</span><span class="p">,</span><span class="w">
+    </span><span class="s2">"state_name"</span><span class="p">:</span><span class="w"> </span><span class="s2">"Texas"</span><span class="p">,</span><span class="w">
+    </span><span class="s2">"zip"</span><span class="p">:</span><span class="w"> </span><span class="s2">"78746"</span><span class="p">,</span><span class="w">
+    </span><span class="s2">"bio"</span><span class="p">:</span><span class="w"> </span><span class="s2">"Hey, fellow RVers! We're excited to show you what we've built. Fill out the reservation request box on the right. You'll be able to save your rig details and see how easy it is to fire one off!"</span><span class="p">,</span><span class="w">
+    </span><span class="s2">"official_description"</span><span class="p">:</span><span class="w"> </span><span class="s2">"This is a wonderful campground that has a lot of fun to offer at a really affordable price. It</span><span class="se">\u</span><span class="s2">2019s located on 3101 Bee Caves Rd in Austin, TX. This is a wonderful location as it</span><span class="se">\u</span><span class="s2">2019s close to a lot of great attractions, restaurants, and many places to shop at. There are plenty of sites to choose from that has a wide range of amenities. These include, but not limited to: electricity, fire pit, laundry facilities, showers, and clean water. </span><span class="se">\r\n\r\n</span><span class="s2">There are a plethora of activities to do here like basketball, kite-Boarding, historic sightseeing, shuffleboard, wake-boarding, and more. From all the things you can do and see here it is overall not only fun but a very relaxing and calming place to stay for the night, or longer. If you are in this area check out this wondrous park as it has a lot here for a great price."</span><span class="p">,</span><span class="w">
+    </span><span class="s2">"average_review_rating"</span><span class="p">:</span><span class="w"> </span><span class="mf">4.5</span><span class="p">,</span><span class="w">
+    </span><span class="s2">"information_verified"</span><span class="p">:</span><span class="w"> </span><span class="kc">false</span><span class="p">,</span><span class="w">
+    </span><span class="s2">"picture_url"</span><span class="p">:</span><span class="w"> </span><span class="s2">"https:</span><span class="se">\/\/</span><span class="s2">s3-us-west-2.amazonaws.com</span><span class="se">\/</span><span class="s2">cdn.roverpass.com</span><span class="se">\/</span><span class="s2">marketing-photos</span><span class="se">\/</span><span class="s2">default-campground-list-image.png"</span><span class="p">,</span><span class="w">
+    </span><span class="s2">"amenities"</span><span class="p">:</span><span class="w"> </span><span class="p">[</span><span class="w">
+      </span><span class="p">{</span><span class="w">
+        </span><span class="s2">"name"</span><span class="p">:</span><span class="w"> </span><span class="s2">"Community Showers"</span><span class="w">
+      </span><span class="p">},</span><span class="w">
+      </span><span class="p">{</span><span class="w">
+        </span><span class="s2">"name"</span><span class="p">:</span><span class="w"> </span><span class="s2">"Community Fire Pit"</span><span class="w">
+      </span><span class="p">},</span><span class="w">
+      </span><span class="p">{</span><span class="w">
+        </span><span class="s2">"name"</span><span class="p">:</span><span class="w"> </span><span class="s2">"Big Rig Friendly"</span><span class="w">
+      </span><span class="p">},</span><span class="w">
+      </span><span class="p">{</span><span class="w">
+        </span><span class="s2">"name"</span><span class="p">:</span><span class="w"> </span><span class="s2">"30 Amps"</span><span class="w">
+      </span><span class="p">},</span><span class="w">
+      </span><span class="p">{</span><span class="w">
+        </span><span class="s2">"name"</span><span class="p">:</span><span class="w"> </span><span class="s2">"100 Amps"</span><span class="w">
+      </span><span class="p">},</span><span class="w">
+      </span><span class="p">{</span><span class="w">
+        </span><span class="s2">"name"</span><span class="p">:</span><span class="w"> </span><span class="s2">"Community Restrooms"</span><span class="w">
+      </span><span class="p">},</span><span class="w">
+      </span><span class="p">{</span><span class="w">
+        </span><span class="s2">"name"</span><span class="p">:</span><span class="w"> </span><span class="s2">"Community BBQ</span><span class="se">\/</span><span class="s2">Grill"</span><span class="w">
+      </span><span class="p">},</span><span class="w">
+      </span><span class="p">{</span><span class="w">
+        </span><span class="s2">"name"</span><span class="p">:</span><span class="w"> </span><span class="s2">"20 Amps"</span><span class="w">
+      </span><span class="p">},</span><span class="w">
+      </span><span class="p">{</span><span class="w">
+        </span><span class="s2">"name"</span><span class="p">:</span><span class="w"> </span><span class="s2">"50 Amps"</span><span class="w">
+      </span><span class="p">},</span><span class="w">
+      </span><span class="p">{</span><span class="w">
+        </span><span class="s2">"name"</span><span class="p">:</span><span class="w"> </span><span class="s2">"General Store"</span><span class="w">
+      </span><span class="p">},</span><span class="w">
+      </span><span class="p">{</span><span class="w">
+        </span><span class="s2">"name"</span><span class="p">:</span><span class="w"> </span><span class="s2">"Trash Service"</span><span class="w">
+      </span><span class="p">},</span><span class="w">
+      </span><span class="p">{</span><span class="w">
+        </span><span class="s2">"name"</span><span class="p">:</span><span class="w"> </span><span class="s2">"Fitness Room"</span><span class="w">
+      </span><span class="p">},</span><span class="w">
+      </span><span class="p">{</span><span class="w">
+        </span><span class="s2">"name"</span><span class="p">:</span><span class="w"> </span><span class="s2">"Propane Refilling Station"</span><span class="w">
+      </span><span class="p">},</span><span class="w">
+      </span><span class="p">{</span><span class="w">
+        </span><span class="s2">"name"</span><span class="p">:</span><span class="w"> </span><span class="s2">"Laundry Facilities"</span><span class="w">
+      </span><span class="p">},</span><span class="w">
+      </span><span class="p">{</span><span class="w">
+        </span><span class="s2">"name"</span><span class="p">:</span><span class="w"> </span><span class="s2">"ADA Accessible"</span><span class="w">
+      </span><span class="p">},</span><span class="w">
+      </span><span class="p">{</span><span class="w">
+        </span><span class="s2">"name"</span><span class="p">:</span><span class="w"> </span><span class="s2">"Pet Friendly"</span><span class="w">
+      </span><span class="p">},</span><span class="w">
+      </span><span class="p">{</span><span class="w">
+        </span><span class="s2">"name"</span><span class="p">:</span><span class="w"> </span><span class="s2">"Waterfront"</span><span class="w">
+      </span><span class="p">},</span><span class="w">
+      </span><span class="p">{</span><span class="w">
+        </span><span class="s2">"name"</span><span class="p">:</span><span class="w"> </span><span class="s2">"Clubhouse"</span><span class="w">
+      </span><span class="p">},</span><span class="w">
+      </span><span class="p">{</span><span class="w">
+        </span><span class="s2">"name"</span><span class="p">:</span><span class="w"> </span><span class="s2">"Community Water Fountain"</span><span class="w">
+      </span><span class="p">},</span><span class="w">
+      </span><span class="p">{</span><span class="w">
+        </span><span class="s2">"name"</span><span class="p">:</span><span class="w"> </span><span class="s2">"Paved Roads"</span><span class="w">
+      </span><span class="p">}</span><span class="w">
+    </span><span class="p">],</span><span class="w">
+    </span><span class="s2">"reviews"</span><span class="p">:</span><span class="w"> </span><span class="p">[</span><span class="w">
+      </span><span class="p">{</span><span class="w">
+        </span><span class="s2">"content"</span><span class="p">:</span><span class="w"> </span><span class="s2">"Testing the reviews."</span><span class="p">,</span><span class="w">
+        </span><span class="s2">"rating"</span><span class="p">:</span><span class="w"> </span><span class="s2">"5.0"</span><span class="w">
+      </span><span class="p">},</span><span class="w">
+      </span><span class="p">{</span><span class="w">
+        </span><span class="s2">"content"</span><span class="p">:</span><span class="w"> </span><span class="s2">"RoverPass is on a mission to make it super easy to find a campground or RV park and book online, cutting out the phone calls or waiting to hear back from the campground. Every day we're working hard to make the experience even better. Let us know what you think!"</span><span class="p">,</span><span class="w">
+        </span><span class="s2">"rating"</span><span class="p">:</span><span class="w"> </span><span class="s2">"5.0"</span><span class="w">
+      </span><span class="p">},</span><span class="w">
+      </span><span class="p">{</span><span class="w">
+        </span><span class="s2">"content"</span><span class="p">:</span><span class="w"> </span><span class="s2">"RoverPass is the best campground reservation company out there.  They make is so easy to book a park! "</span><span class="p">,</span><span class="w">
+        </span><span class="s2">"rating"</span><span class="p">:</span><span class="w"> </span><span class="s2">"3.0"</span><span class="w">
+      </span><span class="p">},</span><span class="w">
+      </span><span class="p">{</span><span class="w">
+        </span><span class="s2">"content"</span><span class="p">:</span><span class="w"> </span><span class="s2">"This name of this place is very fitting! It sure it a funland! The staff is so welcoming and warm that we felt like family. There were a plethora of sites to choose from that were very spacious and had all the amenities we could ask for. There were a ton of fun and relaxing activities to choose from as well. The location was great as it was easy to get to and there was not only so much inside the park but there was a lot of great attractions, places to eat and shop that was only a short drive away. Overall a great place for a great price!  - Review provided by RV Park Recommendations &amp; Reviews Facebook Group"</span><span class="p">,</span><span class="w">
+        </span><span class="s2">"rating"</span><span class="p">:</span><span class="w"> </span><span class="s2">"5.0"</span><span class="w">
+      </span><span class="p">}</span><span class="w">
+    </span><span class="p">],</span><span class="w">
+    </span><span class="s2">"widget_url"</span><span class="p">:</span><span class="w"> </span><span class="kc">null</span><span class="w">
+  </span><span class="p">}</span><span class="w">
+</span><span class="p">]</span><span class="w">
+</span></code></pre>
 <h3 id="query-parameters">Query Parameters</h3>
 
 <table><thead>
 <tr>
 <th>Parameter</th>
-<th>Default</th>
 <th>Description</th>
+<th>Required?</th>
+<th>Example</th>
+<th>Type</th>
 </tr>
 </thead><tbody>
 <tr>
-<td>include_cats</td>
-<td>false</td>
-<td>If set to true, the result will also include cats.</td>
+<td>query</td>
+<td>Encoded Search Query, preferrably from Google Places Autocomplete</td>
+<td>Yes</td>
+<td>Austin%20TX%20USA</td>
+<td>String</td>
 </tr>
 <tr>
-<td>available</td>
-<td>true</td>
-<td>If set to false, the result will include kittens that have already been adopted.</td>
+<td>page</td>
+<td>This changes the page of the pagination of results</td>
+<td>false</td>
+<td>1</td>
+<td>Integer</td>
+</tr>
+<tr>
+<td>per_page</td>
+<td>This changes the amount of results on each page of the pagination</td>
+<td>false</td>
+<td>10</td>
+<td>Integer</td>
 </tr>
 </tbody></table>
 
-<aside class="success">
-Remember — a happy kitten is an authenticated kitten!
-</aside>
-
 <h2 id="get-a-specific-campground">Get a Specific Campground</h2>
-<pre class="highlight ruby tab-ruby"><code><span class="nb">require</span> <span class="s1">'roverpass'</span>
+<pre class="highlight ruby tab-ruby"><code><span class="c1"># models/api_client/campground.rb</span>
+<span class="nb">require</span> <span class="s1">'her'</span>
 
-<span class="n">api</span> <span class="o">=</span> <span class="no">Roverpass</span><span class="o">::</span><span class="no">APIClient</span><span class="p">.</span><span class="nf">authorize!</span><span class="p">(</span><span class="s1">'meowmeowmeow'</span><span class="p">)</span>
-<span class="n">api</span><span class="p">.</span><span class="nf">kittens</span><span class="p">.</span><span class="nf">get</span><span class="p">(</span><span class="mi">2</span><span class="p">)</span>
-</code></pre><pre class="highlight shell tab-shell"><code>curl <span class="s2">"http://example.com/api/kittens/2"</span>
-  -H <span class="s2">"Authorization: meowmeowmeow"</span>
+<span class="k">module</span> <span class="nn">ApiClient</span>
+  <span class="k">class</span> <span class="nc">Campground</span>
+    <span class="kp">include</span> <span class="no">Her</span><span class="o">::</span><span class="no">Model</span>
+  <span class="k">end</span>
+<span class="k">end</span>
+
+
+<span class="c1"># controllers/api_client/campgrounds_controller.rb</span>
+<span class="n">require_dependency</span> <span class="s1">'api_client/campground'</span>
+
+<span class="k">module</span> <span class="nn">ApiClient</span>
+  <span class="k">class</span> <span class="nc">CampgroundsController</span> <span class="o">&lt;</span> <span class="no">ApplicationController</span>
+    <span class="k">def</span> <span class="nf">find_campground</span>
+      <span class="vi">@campground</span> <span class="o">=</span> <span class="o">::</span><span class="no">ApiClient</span><span class="o">::</span><span class="no">Campground</span><span class="p">.</span><span class="nf">find</span><span class="p">(</span><span class="s1">'roverpass-funland'</span><span class="p">)</span>
+    <span class="k">end</span>
+  <span class="k">end</span>
+<span class="k">end</span>
+</code></pre><pre class="highlight shell tab-shell"><code><span class="nv">CONTENT_TYPE</span><span class="o">=</span>application/json
+<span class="nv">HOST</span><span class="o">=</span>https://www.roverpass.com
+<span class="nv">URI</span><span class="o">=</span>/api/campgrounds/:slug
+<span class="nv">API_TOKEN</span><span class="o">=</span>super_secret_token <span class="c"># Not actual API_TOKEN. Don't use this.</span>
+curl -H <span class="s2">"Accept:</span><span class="nv">$CONTENT_TYPE</span><span class="s2">"</span> -H <span class="s2">"Content-Type:</span><span class="nv">$CONTENT_TYPE</span><span class="s2">"</span> -H <span class="s2">"Authorization: Token token=</span><span class="nv">$API_TOKEN</span><span class="s2">"</span> <span class="s2">"</span><span class="nv">$HOST$URI</span><span class="s2">"</span>
 </code></pre>
+<p>This endpoint allows the client to pass in an <code class="prettyprint">:slug</code> or <code class="prettyprint">:id</code> to receive a specific campground.</p>
+
+<h3 id="http-request">HTTP Request</h3>
+
+<p><code class="prettyprint">GET http://www.roverpass.com/api/campgrounds/:slug</code></p>
+
+<h3 id="ruby-her">Ruby/Her</h3>
+
+<p>If you&rsquo;d like to use a Ruby integration, our API works seamlessly with the <a href="https://github.com/remiprev/her">Her</a> gem.</p>
+
 <blockquote>
 <p>The above command returns JSON structured like this:</p>
 </blockquote>
 <pre class="highlight json tab-json"><code><span class="p">{</span><span class="w">
-  </span><span class="s2">"id"</span><span class="p">:</span><span class="w"> </span><span class="mi">2</span><span class="p">,</span><span class="w">
-  </span><span class="s2">"name"</span><span class="p">:</span><span class="w"> </span><span class="s2">"Max"</span><span class="p">,</span><span class="w">
-  </span><span class="s2">"breed"</span><span class="p">:</span><span class="w"> </span><span class="s2">"unknown"</span><span class="p">,</span><span class="w">
-  </span><span class="s2">"fluffiness"</span><span class="p">:</span><span class="w"> </span><span class="mi">5</span><span class="p">,</span><span class="w">
-  </span><span class="s2">"cuteness"</span><span class="p">:</span><span class="w"> </span><span class="mi">10</span><span class="w">
+  </span><span class="s2">"slug"</span><span class="p">:</span><span class="w"> </span><span class="s2">"roverpass-funland"</span><span class="p">,</span><span class="w">
+  </span><span class="s2">"name"</span><span class="p">:</span><span class="w"> </span><span class="s2">"RoverPass Funland Campground"</span><span class="p">,</span><span class="w">
+  </span><span class="s2">"phone"</span><span class="p">:</span><span class="w"> </span><span class="s2">"314274-3624"</span><span class="p">,</span><span class="w">
+  </span><span class="s2">"ranking_score"</span><span class="p">:</span><span class="w"> </span><span class="mi">474</span><span class="p">,</span><span class="w">
+  </span><span class="s2">"latitude"</span><span class="p">:</span><span class="w"> </span><span class="mf">30.272920551044</span><span class="p">,</span><span class="w">
+  </span><span class="s2">"longitude"</span><span class="p">:</span><span class="w"> </span><span class="mf">-97.744463633061</span><span class="p">,</span><span class="w">
+  </span><span class="s2">"full_address"</span><span class="p">:</span><span class="w"> </span><span class="s2">"3101 Bee Caves Rd, Austin, Texas, 78746"</span><span class="p">,</span><span class="w">
+  </span><span class="s2">"address"</span><span class="p">:</span><span class="w"> </span><span class="s2">"3101 Bee Caves Rd"</span><span class="p">,</span><span class="w">
+  </span><span class="s2">"address2"</span><span class="p">:</span><span class="w"> </span><span class="kc">null</span><span class="p">,</span><span class="w">
+  </span><span class="s2">"city_name"</span><span class="p">:</span><span class="w"> </span><span class="s2">"Austin"</span><span class="p">,</span><span class="w">
+  </span><span class="s2">"state_name"</span><span class="p">:</span><span class="w"> </span><span class="s2">"Texas"</span><span class="p">,</span><span class="w">
+  </span><span class="s2">"zip"</span><span class="p">:</span><span class="w"> </span><span class="s2">"78746"</span><span class="p">,</span><span class="w">
+  </span><span class="s2">"bio"</span><span class="p">:</span><span class="w"> </span><span class="s2">"Hey, fellow RVers! We're excited to show you what we've built. Fill out the reservation request box on the right. You'll be able to save your rig details and see how easy it is to fire one off!"</span><span class="p">,</span><span class="w">
+  </span><span class="s2">"official_description"</span><span class="p">:</span><span class="w"> </span><span class="s2">"This is a wonderful campground that has a lot of fun to offer at a really affordable price. It</span><span class="se">\u</span><span class="s2">2019s located on 3101 Bee Caves Rd in Austin, TX. This is a wonderful location as it</span><span class="se">\u</span><span class="s2">2019s close to a lot of great attractions, restaurants, and many places to shop at. There are plenty of sites to choose from that has a wide range of amenities. These include, but not limited to: electricity, fire pit, laundry facilities, showers, and clean water. </span><span class="se">\r\n\r\n</span><span class="s2">There are a plethora of activities to do here like basketball, kite-Boarding, historic sightseeing, shuffleboard, wake-boarding, and more. From all the things you can do and see here it is overall not only fun but a very relaxing and calming place to stay for the night, or longer. If you are in this area check out this wondrous park as it has a lot here for a great price."</span><span class="p">,</span><span class="w">
+  </span><span class="s2">"average_review_rating"</span><span class="p">:</span><span class="w"> </span><span class="mf">4.5</span><span class="p">,</span><span class="w">
+  </span><span class="s2">"information_verified"</span><span class="p">:</span><span class="w"> </span><span class="kc">false</span><span class="p">,</span><span class="w">
+  </span><span class="s2">"picture_url"</span><span class="p">:</span><span class="w"> </span><span class="s2">"https:</span><span class="se">\/\/</span><span class="s2">s3-us-west-2.amazonaws.com</span><span class="se">\/</span><span class="s2">cdn.roverpass.com</span><span class="se">\/</span><span class="s2">marketing-photos</span><span class="se">\/</span><span class="s2">default-campground-list-image.png"</span><span class="p">,</span><span class="w">
+  </span><span class="s2">"amenities"</span><span class="p">:</span><span class="w"> </span><span class="p">[</span><span class="w">
+    </span><span class="p">{</span><span class="w">
+      </span><span class="s2">"name"</span><span class="p">:</span><span class="w"> </span><span class="s2">"Community Showers"</span><span class="w">
+    </span><span class="p">},</span><span class="w">
+    </span><span class="p">{</span><span class="w">
+      </span><span class="s2">"name"</span><span class="p">:</span><span class="w"> </span><span class="s2">"Community Fire Pit"</span><span class="w">
+    </span><span class="p">},</span><span class="w">
+    </span><span class="p">{</span><span class="w">
+      </span><span class="s2">"name"</span><span class="p">:</span><span class="w"> </span><span class="s2">"Big Rig Friendly"</span><span class="w">
+    </span><span class="p">},</span><span class="w">
+    </span><span class="p">{</span><span class="w">
+      </span><span class="s2">"name"</span><span class="p">:</span><span class="w"> </span><span class="s2">"30 Amps"</span><span class="w">
+    </span><span class="p">},</span><span class="w">
+    </span><span class="p">{</span><span class="w">
+      </span><span class="s2">"name"</span><span class="p">:</span><span class="w"> </span><span class="s2">"100 Amps"</span><span class="w">
+    </span><span class="p">},</span><span class="w">
+    </span><span class="p">{</span><span class="w">
+      </span><span class="s2">"name"</span><span class="p">:</span><span class="w"> </span><span class="s2">"Community Restrooms"</span><span class="w">
+    </span><span class="p">},</span><span class="w">
+    </span><span class="p">{</span><span class="w">
+      </span><span class="s2">"name"</span><span class="p">:</span><span class="w"> </span><span class="s2">"Community BBQ</span><span class="se">\/</span><span class="s2">Grill"</span><span class="w">
+    </span><span class="p">},</span><span class="w">
+    </span><span class="p">{</span><span class="w">
+      </span><span class="s2">"name"</span><span class="p">:</span><span class="w"> </span><span class="s2">"20 Amps"</span><span class="w">
+    </span><span class="p">},</span><span class="w">
+    </span><span class="p">{</span><span class="w">
+      </span><span class="s2">"name"</span><span class="p">:</span><span class="w"> </span><span class="s2">"50 Amps"</span><span class="w">
+    </span><span class="p">},</span><span class="w">
+    </span><span class="p">{</span><span class="w">
+      </span><span class="s2">"name"</span><span class="p">:</span><span class="w"> </span><span class="s2">"General Store"</span><span class="w">
+    </span><span class="p">},</span><span class="w">
+    </span><span class="p">{</span><span class="w">
+      </span><span class="s2">"name"</span><span class="p">:</span><span class="w"> </span><span class="s2">"Trash Service"</span><span class="w">
+    </span><span class="p">},</span><span class="w">
+    </span><span class="p">{</span><span class="w">
+      </span><span class="s2">"name"</span><span class="p">:</span><span class="w"> </span><span class="s2">"Fitness Room"</span><span class="w">
+    </span><span class="p">},</span><span class="w">
+    </span><span class="p">{</span><span class="w">
+      </span><span class="s2">"name"</span><span class="p">:</span><span class="w"> </span><span class="s2">"Propane Refilling Station"</span><span class="w">
+    </span><span class="p">},</span><span class="w">
+    </span><span class="p">{</span><span class="w">
+      </span><span class="s2">"name"</span><span class="p">:</span><span class="w"> </span><span class="s2">"Laundry Facilities"</span><span class="w">
+    </span><span class="p">},</span><span class="w">
+    </span><span class="p">{</span><span class="w">
+      </span><span class="s2">"name"</span><span class="p">:</span><span class="w"> </span><span class="s2">"ADA Accessible"</span><span class="w">
+    </span><span class="p">},</span><span class="w">
+    </span><span class="p">{</span><span class="w">
+      </span><span class="s2">"name"</span><span class="p">:</span><span class="w"> </span><span class="s2">"Pet Friendly"</span><span class="w">
+    </span><span class="p">},</span><span class="w">
+    </span><span class="p">{</span><span class="w">
+      </span><span class="s2">"name"</span><span class="p">:</span><span class="w"> </span><span class="s2">"Waterfront"</span><span class="w">
+    </span><span class="p">},</span><span class="w">
+    </span><span class="p">{</span><span class="w">
+      </span><span class="s2">"name"</span><span class="p">:</span><span class="w"> </span><span class="s2">"Clubhouse"</span><span class="w">
+    </span><span class="p">},</span><span class="w">
+    </span><span class="p">{</span><span class="w">
+      </span><span class="s2">"name"</span><span class="p">:</span><span class="w"> </span><span class="s2">"Community Water Fountain"</span><span class="w">
+    </span><span class="p">},</span><span class="w">
+    </span><span class="p">{</span><span class="w">
+      </span><span class="s2">"name"</span><span class="p">:</span><span class="w"> </span><span class="s2">"Paved Roads"</span><span class="w">
+    </span><span class="p">}</span><span class="w">
+  </span><span class="p">],</span><span class="w">
+  </span><span class="s2">"reviews"</span><span class="p">:</span><span class="w"> </span><span class="p">[</span><span class="w">
+    </span><span class="p">{</span><span class="w">
+      </span><span class="s2">"content"</span><span class="p">:</span><span class="w"> </span><span class="s2">"Testing the reviews."</span><span class="p">,</span><span class="w">
+      </span><span class="s2">"rating"</span><span class="p">:</span><span class="w"> </span><span class="s2">"5.0"</span><span class="w">
+    </span><span class="p">},</span><span class="w">
+    </span><span class="p">{</span><span class="w">
+      </span><span class="s2">"content"</span><span class="p">:</span><span class="w"> </span><span class="s2">"RoverPass is on a mission to make it super easy to find a campground or RV park and book online, cutting out the phone calls or waiting to hear back from the campground. Every day we're working hard to make the experience even better. Let us know what you think!"</span><span class="p">,</span><span class="w">
+      </span><span class="s2">"rating"</span><span class="p">:</span><span class="w"> </span><span class="s2">"5.0"</span><span class="w">
+    </span><span class="p">},</span><span class="w">
+    </span><span class="p">{</span><span class="w">
+      </span><span class="s2">"content"</span><span class="p">:</span><span class="w"> </span><span class="s2">"RoverPass is the best campground reservation company out there.  They make is so easy to book a park! "</span><span class="p">,</span><span class="w">
+      </span><span class="s2">"rating"</span><span class="p">:</span><span class="w"> </span><span class="s2">"3.0"</span><span class="w">
+    </span><span class="p">},</span><span class="w">
+    </span><span class="p">{</span><span class="w">
+      </span><span class="s2">"content"</span><span class="p">:</span><span class="w"> </span><span class="s2">"This name of this place is very fitting! It sure it a funland! The staff is so welcoming and warm that we felt like family. There were a plethora of sites to choose from that were very spacious and had all the amenities we could ask for. There were a ton of fun and relaxing activities to choose from as well. The location was great as it was easy to get to and there was not only so much inside the park but there was a lot of great attractions, places to eat and shop that was only a short drive away. Overall a great place for a great price!  - Review provided by RV Park Recommendations &amp; Reviews Facebook Group"</span><span class="p">,</span><span class="w">
+      </span><span class="s2">"rating"</span><span class="p">:</span><span class="w"> </span><span class="s2">"5.0"</span><span class="w">
+    </span><span class="p">}</span><span class="w">
+  </span><span class="p">],</span><span class="w">
+  </span><span class="s2">"widget_url"</span><span class="p">:</span><span class="w"> </span><span class="kc">null</span><span class="w">
 </span><span class="p">}</span><span class="w">
 </span></code></pre>
-<p>This endpoint retrieves a specific kitten.</p>
-
-<aside class="warning">Inside HTML code blocks like this one, you can&rsquo;t use Markdown, so use <code>&lt;code&gt;</code> blocks to denote code.</aside>
-
-<h3 id="http-request">HTTP Request</h3>
-
-<p><code class="prettyprint">GET http://example.com/kittens/&lt;ID&gt;</code></p>
-
-<h3 id="url-parameters">URL Parameters</h3>
+<h3 id="query-parameters">Query Parameters</h3>
 
 <table><thead>
 <tr>
 <th>Parameter</th>
 <th>Description</th>
+<th>Required?</th>
+<th>Example</th>
+<th>Type</th>
 </tr>
 </thead><tbody>
 <tr>
-<td>ID</td>
-<td>The ID of the kitten to retrieve</td>
+<td>slug</td>
+<td>Specific identifier for each campground</td>
+<td>Yes</td>
+<td>&lsquo;roverpass-funland&rsquo;</td>
+<td>String</td>
 </tr>
 </tbody></table>
 
           <h1 id="errors">Errors</h1>
-
-<aside class="notice">This error section is stored in a separate file in `includes/_errors.md`. Slate allows you to optionally separate out your docs into many files&hellip;just save them to the `includes` folder and add them to the top of your `index.md`&lsquo;s frontmatter. Files are included in the order listed.</aside>
 
 <p>The Roverpass API uses the following error codes:</p>
 
