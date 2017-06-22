@@ -1,27 +1,19 @@
 # Authentication
 
-> To authorize, use this code:
+In order to use the Roverpass API, you will first need to be given an API_TOKEN. Once received, you will need to pass in your API_TOKEN as a header in each request, like so:
 
-```ruby
-require 'roverpass'
+`-H "Authorization: Token token=$API_TOKEN"`
 
-api = Roverpass::APIClient.authorize!('meowmeowmeow')
-```
+This will allow us to verify who is receiving each response.
+
+Application type is not necessary, but if you are a perfectionist, you can pass in `application/json` like this:
+
+`-H "Accept:application/json" -H "Content-Type:application/json"`
 
 ```shell
-# With shell, you can just pass the correct header with each request
-curl "api_endpoint_here"
-  -H "Authorization: meowmeowmeow"
+CONTENT_TYPE=application/json
+HOST=https://www.roverpass.com
+URI=/api/campgrounds/roverpass-funland-campground-austin-tx
+API_TOKEN=sup3rs3cr3tp@55w0rd # Not actual API_TOKEN. Don't use this.
+curl -H "Accept:$CONTENT_TYPE" -H "Content-Type:$CONTENT_TYPE" -H "Authorization: Token token=$API_TOKEN" "$HOST$URI"
 ```
-
-> Make sure to replace `meowmeowmeow` with your API key.
-
-Roverpass uses API keys to allow access to the API. You can register a new Roverpass API key at our [developer portal](http://example.com/developers).
-
-Roverpass expects for the API key to be included in all API requests to the server in a header that looks like the following:
-
-`Authorization: meowmeowmeow`
-
-<aside class="notice">
-You must replace <code>meowmeowmeow</code> with your personal API key.
-</aside>
