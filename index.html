@@ -236,7 +236,9 @@
 
           <h1 id="authentication">Authentication</h1>
 
-<p>In order to use the Roverpass API, you will first need to be given an API_TOKEN. Once received, you will need to pass in your API_TOKEN as a header in each request, like so:</p>
+<h2 id="header">Header</h2>
+
+<p>In order to use the Roverpass API, you will first need to be given an API_TOKEN. Once received, you will need to pass in your API_TOKEN as a header in each request, like this:</p>
 
 <p><code class="prettyprint">-H &quot;Authorization: Token token=$API_TOKEN&quot;</code></p>
 
@@ -245,10 +247,21 @@
 <p>Application type is not necessary, but if you are a perfectionist, you can pass in <code class="prettyprint">application/json</code> like this:</p>
 
 <p><code class="prettyprint">-H &quot;Accept:application/json&quot; -H &quot;Content-Type:application/json&quot;</code></p>
-<pre class="highlight shell tab-shell"><code><span class="nv">CONTENT_TYPE</span><span class="o">=</span>application/json
+<pre class="highlight shell tab-shell"><code><span class="nv">API_TOKEN</span><span class="o">=</span>supersecrettoken <span class="c"># Not actual API_TOKEN. Don't use this.</span>
+<span class="nv">CONTENT_TYPE</span><span class="o">=</span>application/json
 <span class="nv">HOST</span><span class="o">=</span>https://www.roverpass.com
 <span class="nv">URI</span><span class="o">=</span>/api/campgrounds/roverpass-funland-campground-austin-tx
-<span class="nv">API_TOKEN</span><span class="o">=</span>sup3rs3cr3tp@55w0rd <span class="c"># Not actual API_TOKEN. Don't use this.</span>
+curl -H <span class="s2">"Accept:</span><span class="nv">$CONTENT_TYPE</span><span class="s2">"</span> -H <span class="s2">"Content-Type:</span><span class="nv">$CONTENT_TYPE</span><span class="s2">"</span> -H <span class="s2">"Authorization: Token token=</span><span class="nv">$API_TOKEN</span><span class="s2">"</span> <span class="s2">"</span><span class="nv">$HOST$URI</span><span class="s2">"</span>
+</code></pre>
+<h2 id="partners">Partners</h2>
+
+<p>Each API Token in the RoverPass database will correspond to a <code class="prettyprint">Partner</code>. We have set up an endpoint so that you can ensure your API Token corresponds to you as a partner. Your partner name will be lowercase with no spaces. For example, if your partner name was <code class="prettyprint">RoverPass</code>, the response would look like:</p>
+
+<p><code class="prettyprint">{&quot;partner&quot;: &quot;roverpass&quot;}</code></p>
+<pre class="highlight shell tab-shell"><code><span class="nv">API_TOKEN</span><span class="o">=</span>supersecrettoken
+<span class="nv">CONTENT_TYPE</span><span class="o">=</span>application/json
+<span class="nv">HOST</span><span class="o">=</span>https://www.roverpass.com
+<span class="nv">URI</span><span class="o">=</span>/api/partner
 curl -H <span class="s2">"Accept:</span><span class="nv">$CONTENT_TYPE</span><span class="s2">"</span> -H <span class="s2">"Content-Type:</span><span class="nv">$CONTENT_TYPE</span><span class="s2">"</span> -H <span class="s2">"Authorization: Token token=</span><span class="nv">$API_TOKEN</span><span class="s2">"</span> <span class="s2">"</span><span class="nv">$HOST$URI</span><span class="s2">"</span>
 </code></pre>
           <h1 id="campgrounds">Campgrounds</h1>
@@ -607,7 +620,7 @@ curl -H <span class="s2">"Accept:</span><span class="nv">$CONTENT_TYPE</span><sp
 </tr>
 <tr>
 <td>401</td>
-<td>Unauthorized &ndash; Your API key is wrong</td>
+<td>Unauthorized &ndash; API Token is invalid</td>
 </tr>
 <tr>
 <td>403</td>
