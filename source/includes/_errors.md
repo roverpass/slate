@@ -6,7 +6,7 @@ The Roverpass API uses the following error codes:
 Error Code | Meaning
 ---------- | -------
 400 | Bad Request -- Your request sucks
-401 | Unauthorized -- Your API key is wrong
+401 | Unauthorized -- API Token is invalid
 403 | Forbidden -- The kitten requested is hidden for administrators only
 404 | Not Found -- The specified kitten could not be found
 405 | Method Not Allowed -- You tried to access a kitten with an invalid method
