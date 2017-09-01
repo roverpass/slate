@@ -1,3 +1,12 @@
+Publishing Your Docs to GitHub Pages
+
+Publishing your API documentation couldn't be more simple.
+
+Make sure you're working on a fork in your own account, not our original repo: git remote show origin.
+Commit your changes to the markdown source: git commit -a -m "Update index.md"
+Push the markdown source changes to GitHub: git push
+Run ./deploy.sh
+
 <p align="center">
   <img src="https://raw.githubusercontent.com/lord/img/master/logo-slate.png" alt="Slate: API Documentation Generator" width="226">
   <br>

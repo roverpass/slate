@@ -26,18 +26,19 @@ end
 ```
 
 ```shell
+API_TOKEN=super_secret_token
 CONTENT_TYPE=application/json
+VERSION=1
 HOST=https://www.roverpass.com
-URI=/api/campgrounds/search/Austin%20Texas%20USA
-API_TOKEN=super_secret_token # Not actual API_TOKEN. Don't use this.
-curl -H "Accept:$CONTENT_TYPE" -H "Content-Type:$CONTENT_TYPE" -H "Authorization: Token token=$API_TOKEN" "$HOST$URI"
+URI=/api/campgrounds?q=Austin%20Texas%20USA&page=1&per_page=10
+curl -H "Accept:$CONTENT_TYPE" -H "Version=$VERSION" -H "Authorization: Token token=$API_TOKEN" "$HOST$URI"
 ```
 
 This endpoint allows the client to pass in a query to geolocate campgrounds within a 40 mile radius.
 
 ### HTTP Request
 
-`GET http://www.roverpass.com/api/campgrounds/search/:query`
+`GET http://www.roverpass.com/api/campgrounds?q=Austin%20Texas%20USA`
 
 ### Ruby/Her
 
@@ -48,7 +49,7 @@ If you'd like to use a Ruby integration, our API works seamlessly with the [Her]
 ```json
 [
   {
-    "slug": "roverpass-funland",
+    "slug": "roverpass-funland-campground-austin-tx",
     "name": "RoverPass Funland Campground",
     "phone": "314274-3624",
     "ranking_score": 474,
@@ -177,25 +178,26 @@ require_dependency 'api_client/campground'
 module ApiClient
   class CampgroundsController < ApplicationController
     def find_campground
-      @campground = ::ApiClient::Campground.find('roverpass-funland')
+      @campground = ::ApiClient::Campground.find('roverpass-funland-campground-austin-tx')
     end
   end
 end
 ```
 
 ```shell
+API_TOKEN=super_secret_token
 CONTENT_TYPE=application/json
+VERSION=1
 HOST=https://www.roverpass.com
-URI=/api/campgrounds/:slug
-API_TOKEN=super_secret_token # Not actual API_TOKEN. Don't use this.
-curl -H "Accept:$CONTENT_TYPE" -H "Content-Type:$CONTENT_TYPE" -H "Authorization: Token token=$API_TOKEN" "$HOST$URI"
+URI=/api/campgrounds/roverpass-funland-campground-austin-tx
+curl -H "Accept:$CONTENT_TYPE" -H "Version=$VERSION" -H "Authorization: Token token=$API_TOKEN" "$HOST$URI"
 ```
 
 This endpoint allows the client to pass in an `:slug` or `:id` to receive a specific campground.
 
 ### HTTP Request
 
-`GET http://www.roverpass.com/api/campgrounds/:slug`
+`GET http://www.roverpass.com/api/campgrounds/roverpass-funland-campground-austin-tx`
 
 ### Ruby/Her
 
@@ -205,7 +207,7 @@ If you'd like to use a Ruby integration, our API works seamlessly with the [Her]
 
 ```json
 {
-  "slug": "roverpass-funland",
+  "slug": "roverpass-funland-campground-austin-tx",
   "name": "RoverPass Funland Campground",
   "phone": "314274-3624",
   "ranking_score": 474,
@@ -310,4 +312,4 @@ If you'd like to use a Ruby integration, our API works seamlessly with the [Her]
 
 Parameter | Description | Required? | Example | Type
 --------- | ----------- | --------- | ------- | ----
-slug | Specific identifier for each campground | Yes | 'roverpass-funland'  | String
+slug | Specific identifier for each campground | Yes | 'roverpass-funland-campground-austin-tx'  | String
