@@ -234,36 +234,58 @@
 
 <p>We have language bindings in Shell and Ruby! You can view code examples in the dark area to the right, and you can switch the programming language of the examples with the tabs in the top right.</p>
 
-          <h1 id="authentication">Authentication</h1>
+          <h1 id="configuration">Configuration</h1>
 
-<h2 id="header">Header</h2>
-
+<h2 id="authorization-tokens">Authorization Tokens</h2>
+<pre class="highlight shell tab-shell"><code><span class="nv">API_TOKEN</span><span class="o">=</span>supersecrettoken <span class="c"># Not actual API_TOKEN. Don't use this.</span>
+<span class="nv">CONTENT_TYPE</span><span class="o">=</span>application/json
+<span class="nv">VERSION</span><span class="o">=</span>1
+<span class="nv">HOST</span><span class="o">=</span>https://www.roverpass.com
+<span class="nv">URI</span><span class="o">=</span>/api/partner
+curl -H <span class="s2">"Accept:</span><span class="nv">$CONTENT_TYPE</span><span class="s2">"</span> -H <span class="s2">"Version=</span><span class="nv">$VERSION</span><span class="s2">"</span> -H <span class="s2">"Authorization: Token token=</span><span class="nv">$API_TOKEN</span><span class="s2">"</span> <span class="s2">"</span><span class="nv">$HOST$URI</span><span class="s2">"</span>
+</code></pre>
 <p>In order to use the Roverpass API, you will first need to be given an API_TOKEN. Once received, you will need to pass in your API_TOKEN as a header in each request, like this:</p>
 
 <p><code class="prettyprint">-H &quot;Authorization: Token token=$API_TOKEN&quot;</code></p>
 
 <p>This will allow us to verify who is receiving each response.</p>
 
-<p>Application type is not necessary, but if you are a perfectionist, you can pass in <code class="prettyprint">application/json</code> like this:</p>
-
-<p><code class="prettyprint">-H &quot;Accept:application/json&quot; -H &quot;Content-Type:application/json&quot;</code></p>
-<pre class="highlight shell tab-shell"><code><span class="nv">API_TOKEN</span><span class="o">=</span>supersecrettoken <span class="c"># Not actual API_TOKEN. Don't use this.</span>
-<span class="nv">CONTENT_TYPE</span><span class="o">=</span>application/json
-<span class="nv">HOST</span><span class="o">=</span>https://www.roverpass.com
-<span class="nv">URI</span><span class="o">=</span>/api/campgrounds/roverpass-funland-campground-austin-tx
-curl -H <span class="s2">"Accept:</span><span class="nv">$CONTENT_TYPE</span><span class="s2">"</span> -H <span class="s2">"Content-Type:</span><span class="nv">$CONTENT_TYPE</span><span class="s2">"</span> -H <span class="s2">"Authorization: Token token=</span><span class="nv">$API_TOKEN</span><span class="s2">"</span> <span class="s2">"</span><span class="nv">$HOST$URI</span><span class="s2">"</span>
-</code></pre>
-<h2 id="partners">Partners</h2>
-
 <p>Each API Token in the RoverPass database will correspond to a <code class="prettyprint">Partner</code>. We have set up an endpoint so that you can ensure your API Token corresponds to you as a partner. Your partner name will be lowercase with no spaces. For example, if your partner name was <code class="prettyprint">RoverPass</code>, the response would look like:</p>
 
 <p><code class="prettyprint">{&quot;partner&quot;: &quot;roverpass&quot;}</code></p>
+
+<h2 id="response-types">Response Types</h2>
+<pre class="highlight shell tab-shell"><code><span class="nv">API_TOKEN</span><span class="o">=</span>supersecrettoken
+<span class="nv">CONTENT_TYPE</span><span class="o">=</span>application/vnd.api+json
+<span class="nv">VERSION</span><span class="o">=</span>1
+<span class="nv">HOST</span><span class="o">=</span>https://www.roverpass.com
+<span class="nv">URI</span><span class="o">=</span>/api/campgrounds/roverpass-funland-campground-austin-tx
+curl -H <span class="s2">"Accept:</span><span class="nv">$CONTENT_TYPE</span><span class="s2">"</span> -H <span class="s2">"Version=</span><span class="nv">$VERSION</span><span class="s2">"</span> -H <span class="s2">"Authorization: Token token=</span><span class="nv">$API_TOKEN</span><span class="s2">"</span> <span class="s2">"</span><span class="nv">$HOST$URI</span><span class="s2">"</span>
+</code></pre>
+<p>The type of response you would like to receive is also necessary. We accept two types:</p>
+
+<p>If you would like to receive a response as simple attributes, use this header:</p>
+
+<p><code class="prettyprint">-H &quot;Accept:application/json&quot;</code></p>
+
+<p>If you would like to receive a response structured with the <a href="http://jsonapi.org/">JSON:API specification</a>, use this header:</p>
+
+<p><code class="prettyprint">-H &quot;Accept:application/vnd.api+json&quot;</code></p>
+
+<h2 id="versions">Versions</h2>
 <pre class="highlight shell tab-shell"><code><span class="nv">API_TOKEN</span><span class="o">=</span>supersecrettoken
 <span class="nv">CONTENT_TYPE</span><span class="o">=</span>application/json
+<span class="nv">VERSION</span><span class="o">=</span>1
 <span class="nv">HOST</span><span class="o">=</span>https://www.roverpass.com
 <span class="nv">URI</span><span class="o">=</span>/api/partner
-curl -H <span class="s2">"Accept:</span><span class="nv">$CONTENT_TYPE</span><span class="s2">"</span> -H <span class="s2">"Content-Type:</span><span class="nv">$CONTENT_TYPE</span><span class="s2">"</span> -H <span class="s2">"Authorization: Token token=</span><span class="nv">$API_TOKEN</span><span class="s2">"</span> <span class="s2">"</span><span class="nv">$HOST$URI</span><span class="s2">"</span>
+curl -H <span class="s2">"Accept:</span><span class="nv">$CONTENT_TYPE</span><span class="s2">"</span> -H <span class="s2">"Version=</span><span class="nv">$VERSION</span><span class="s2">"</span> -H <span class="s2">"Authorization: Token token=</span><span class="nv">$API_TOKEN</span><span class="s2">"</span> <span class="s2">"</span><span class="nv">$HOST$URI</span><span class="s2">"</span>
 </code></pre>
+<p>While adding a version number to the header is not required (the current default is 1), we HIGHLY RECOMMEND adding a version header like this:</p>
+
+<p><code class="prettyprint">-H &quot;Version=1&quot;</code></p>
+
+<p>Our API is only on version 1, but as we update, it is likely later versions will be set the default, and as conventions and specifications in the industry change, so will our API functionality. Adding a version will greatly reduce future errors.</p>
+
           <h1 id="campgrounds">Campgrounds</h1>
 
 <h2 id="search-campgrounds">Search Campgrounds</h2>
@@ -287,17 +309,18 @@ curl -H <span class="s2">"Accept:</span><span class="nv">$CONTENT_TYPE</span><sp
     <span class="k">end</span>
   <span class="k">end</span>
 <span class="k">end</span>
-</code></pre><pre class="highlight shell tab-shell"><code><span class="nv">CONTENT_TYPE</span><span class="o">=</span>application/json
+</code></pre><pre class="highlight shell tab-shell"><code><span class="nv">API_TOKEN</span><span class="o">=</span>super_secret_token
+<span class="nv">CONTENT_TYPE</span><span class="o">=</span>application/json
+<span class="nv">VERSION</span><span class="o">=</span>1
 <span class="nv">HOST</span><span class="o">=</span>https://www.roverpass.com
-<span class="nv">URI</span><span class="o">=</span>/api/campgrounds/search/Austin%20Texas%20USA
-<span class="nv">API_TOKEN</span><span class="o">=</span>super_secret_token <span class="c"># Not actual API_TOKEN. Don't use this.</span>
-curl -H <span class="s2">"Accept:</span><span class="nv">$CONTENT_TYPE</span><span class="s2">"</span> -H <span class="s2">"Content-Type:</span><span class="nv">$CONTENT_TYPE</span><span class="s2">"</span> -H <span class="s2">"Authorization: Token token=</span><span class="nv">$API_TOKEN</span><span class="s2">"</span> <span class="s2">"</span><span class="nv">$HOST$URI</span><span class="s2">"</span>
+<span class="nv">URI</span><span class="o">=</span>/api/campgrounds?q<span class="o">=</span>Austin%20Texas%20USA&amp;page<span class="o">=</span>1&amp;per_page<span class="o">=</span>10
+curl -H <span class="s2">"Accept:</span><span class="nv">$CONTENT_TYPE</span><span class="s2">"</span> -H <span class="s2">"Version=</span><span class="nv">$VERSION</span><span class="s2">"</span> -H <span class="s2">"Authorization: Token token=</span><span class="nv">$API_TOKEN</span><span class="s2">"</span> <span class="s2">"</span><span class="nv">$HOST$URI</span><span class="s2">"</span>
 </code></pre>
 <p>This endpoint allows the client to pass in a query to geolocate campgrounds within a 40 mile radius.</p>
 
 <h3 id="http-request">HTTP Request</h3>
 
-<p><code class="prettyprint">GET http://www.roverpass.com/api/campgrounds/search/:query</code></p>
+<p><code class="prettyprint">GET http://www.roverpass.com/api/campgrounds?q=Austin%20Texas%20USA</code></p>
 
 <h3 id="ruby-her">Ruby/Her</h3>
 
@@ -308,7 +331,7 @@ curl -H <span class="s2">"Accept:</span><span class="nv">$CONTENT_TYPE</span><sp
 </blockquote>
 <pre class="highlight json tab-json"><code><span class="p">[</span><span class="w">
   </span><span class="p">{</span><span class="w">
-    </span><span class="s2">"slug"</span><span class="p">:</span><span class="w"> </span><span class="s2">"roverpass-funland"</span><span class="p">,</span><span class="w">
+    </span><span class="s2">"slug"</span><span class="p">:</span><span class="w"> </span><span class="s2">"roverpass-funland-campground-austin-tx"</span><span class="p">,</span><span class="w">
     </span><span class="s2">"name"</span><span class="p">:</span><span class="w"> </span><span class="s2">"RoverPass Funland Campground"</span><span class="p">,</span><span class="w">
     </span><span class="s2">"phone"</span><span class="p">:</span><span class="w"> </span><span class="s2">"314274-3624"</span><span class="p">,</span><span class="w">
     </span><span class="s2">"ranking_score"</span><span class="p">:</span><span class="w"> </span><span class="mi">474</span><span class="p">,</span><span class="w">
@@ -460,21 +483,22 @@ curl -H <span class="s2">"Accept:</span><span class="nv">$CONTENT_TYPE</span><sp
 <span class="k">module</span> <span class="nn">ApiClient</span>
   <span class="k">class</span> <span class="nc">CampgroundsController</span> <span class="o">&lt;</span> <span class="no">ApplicationController</span>
     <span class="k">def</span> <span class="nf">find_campground</span>
-      <span class="vi">@campground</span> <span class="o">=</span> <span class="o">::</span><span class="no">ApiClient</span><span class="o">::</span><span class="no">Campground</span><span class="p">.</span><span class="nf">find</span><span class="p">(</span><span class="s1">'roverpass-funland'</span><span class="p">)</span>
+      <span class="vi">@campground</span> <span class="o">=</span> <span class="o">::</span><span class="no">ApiClient</span><span class="o">::</span><span class="no">Campground</span><span class="p">.</span><span class="nf">find</span><span class="p">(</span><span class="s1">'roverpass-funland-campground-austin-tx'</span><span class="p">)</span>
     <span class="k">end</span>
   <span class="k">end</span>
 <span class="k">end</span>
-</code></pre><pre class="highlight shell tab-shell"><code><span class="nv">CONTENT_TYPE</span><span class="o">=</span>application/json
+</code></pre><pre class="highlight shell tab-shell"><code><span class="nv">API_TOKEN</span><span class="o">=</span>super_secret_token
+<span class="nv">CONTENT_TYPE</span><span class="o">=</span>application/json
+<span class="nv">VERSION</span><span class="o">=</span>1
 <span class="nv">HOST</span><span class="o">=</span>https://www.roverpass.com
-<span class="nv">URI</span><span class="o">=</span>/api/campgrounds/:slug
-<span class="nv">API_TOKEN</span><span class="o">=</span>super_secret_token <span class="c"># Not actual API_TOKEN. Don't use this.</span>
-curl -H <span class="s2">"Accept:</span><span class="nv">$CONTENT_TYPE</span><span class="s2">"</span> -H <span class="s2">"Content-Type:</span><span class="nv">$CONTENT_TYPE</span><span class="s2">"</span> -H <span class="s2">"Authorization: Token token=</span><span class="nv">$API_TOKEN</span><span class="s2">"</span> <span class="s2">"</span><span class="nv">$HOST$URI</span><span class="s2">"</span>
+<span class="nv">URI</span><span class="o">=</span>/api/campgrounds/roverpass-funland-campground-austin-tx
+curl -H <span class="s2">"Accept:</span><span class="nv">$CONTENT_TYPE</span><span class="s2">"</span> -H <span class="s2">"Version=</span><span class="nv">$VERSION</span><span class="s2">"</span> -H <span class="s2">"Authorization: Token token=</span><span class="nv">$API_TOKEN</span><span class="s2">"</span> <span class="s2">"</span><span class="nv">$HOST$URI</span><span class="s2">"</span>
 </code></pre>
 <p>This endpoint allows the client to pass in an <code class="prettyprint">:slug</code> or <code class="prettyprint">:id</code> to receive a specific campground.</p>
 
 <h3 id="http-request">HTTP Request</h3>
 
-<p><code class="prettyprint">GET http://www.roverpass.com/api/campgrounds/:slug</code></p>
+<p><code class="prettyprint">GET http://www.roverpass.com/api/campgrounds/roverpass-funland-campground-austin-tx</code></p>
 
 <h3 id="ruby-her">Ruby/Her</h3>
 
@@ -484,7 +508,7 @@ curl -H <span class="s2">"Accept:</span><span class="nv">$CONTENT_TYPE</span><sp
 <p>The above command returns JSON structured like this:</p>
 </blockquote>
 <pre class="highlight json tab-json"><code><span class="p">{</span><span class="w">
-  </span><span class="s2">"slug"</span><span class="p">:</span><span class="w"> </span><span class="s2">"roverpass-funland"</span><span class="p">,</span><span class="w">
+  </span><span class="s2">"slug"</span><span class="p">:</span><span class="w"> </span><span class="s2">"roverpass-funland-campground-austin-tx"</span><span class="p">,</span><span class="w">
   </span><span class="s2">"name"</span><span class="p">:</span><span class="w"> </span><span class="s2">"RoverPass Funland Campground"</span><span class="p">,</span><span class="w">
   </span><span class="s2">"phone"</span><span class="p">:</span><span class="w"> </span><span class="s2">"314274-3624"</span><span class="p">,</span><span class="w">
   </span><span class="s2">"ranking_score"</span><span class="p">:</span><span class="w"> </span><span class="mi">474</span><span class="p">,</span><span class="w">
@@ -599,7 +623,7 @@ curl -H <span class="s2">"Accept:</span><span class="nv">$CONTENT_TYPE</span><sp
 <td>slug</td>
 <td>Specific identifier for each campground</td>
 <td>Yes</td>
-<td>&lsquo;roverpass-funland&rsquo;</td>
+<td>&lsquo;roverpass-funland-campground-austin-tx&rsquo;</td>
 <td>String</td>
 </tr>
 </tbody></table>
